@@ -1,0 +1,236 @@
+{
+  "info": {
+    "_postman_id": "5a79f747-6937-4d16-902f-7711f23b7a1c",
+    "name": "TG_BOT_Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49267125",
+    "_collection_link": "https://go.postman.co/collection/49267125-5a79f747-6937-4d16-902f-7711f23b7a1c?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Start",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": 6028995389,\n  \"username\": \"test_user\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/start",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "start"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AddCategory",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": 6028995389,\n  \"name\": \"тестNewman\",\n  \"color\": \"\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/category/add",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "category",
+            "add"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Categories",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": 6028995389\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/categories",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "categories"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AddExpense",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": 6028995389,\n  \"amount\": 500,\n  \"category\": \"Еда\",\n  \"description\": \"Обед в кафе\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/add",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "add"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Today",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": 6028995389\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/today",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "today"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Week",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": 6028995389\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/week",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "week"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Month",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": 6028995389\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/month",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "month"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Stats",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": 6028995389\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/stats",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "stats"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
