@@ -5,9 +5,9 @@ import (
 )
 
 type Profile struct {
-	ID         int64     `json:"id"`
-	Username   string    `json:"username"`
-	Created_at time.Time `json:"-"`
+	ID        int64     `json:"id"`
+	Username  string    `json:"username"`
+	CreatedAt time.Time `json:"-"`
 }
 
 type Category struct {
@@ -25,19 +25,9 @@ type CategoryResponse struct {
 
 type Expense struct {
 	UserID      int64     `json:"user_id"`
-	Amount      float64   `json:"amount"`
+	CategoryID  int       `json:"category_id"`
 	Category    string    `json:"category"`
+	Amount      float64   `json:"amount"`
 	Description string    `json:"description"`
 	Created_at  time.Time `json:"created_at"`
-}
-
-type TelegramUpdate struct {
-	UpdateID int `json:"update_id"`
-	Massage  struct {
-		From struct {
-			ID       int64  `json:"id"`
-			Username string `json:"username"`
-		} `json:"from"`
-		Text string `json:"text"`
-	} `json:"massage"`
 }

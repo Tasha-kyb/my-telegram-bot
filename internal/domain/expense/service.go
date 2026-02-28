@@ -1,4 +1,4 @@
-package usecase
+package expense
 
 import (
 	"context"
@@ -8,106 +8,18 @@ import (
 	"strings"
 	"time"
 
-	"github.com/internal/model"
+	"github.com/Tasha-kyb/my-telegram-bot/internal/model"
 )
 
-type ServiceT struct {
-	repository Repository
+type Service struct {
+	repo Repository
 }
 
-func NewService(repository Repository) *ServiceT {
-	return &ServiceT{repository: repository}
+func NewService(repo Repository) *Service {
+	return &Service{repo: repo}
 }
-func (p *ServiceT) CreateProfile(ctx context.Context, req model.Profile) (string, error) {
-	if req.ID == 0 || strings.TrimSpace(req.Username) == "" {
-		return "", errors.New("❌ Не хватает параметров для создания профиля")
-	}
-	newProfile := &model.Profile{
-		ID:         req.ID,
-		Username:   req.Username,
-		Created_at: time.Now(),
-	}
-	err := p.repository.CreateProfile(ctx, newProfile)
-	if err != nil {
-		return "", fmt.Errorf("❌ Ошибка при создании профиля, %w", err)
-	}
-	startMessage := `
-	👋 Добро пожаловать в Expense Tracker!
 
-	Я помогу вам отслеживать расходы и управлять бюджетами.
-
-	✅ Вы зарегистрированы!
-	📂 Созданы базовые категории:
-   • Еда
-   • Транспорт
-   • Развлечения
-   • Прочее
-`
-	return startMessage, nil
-}
-func (p *ServiceT) AddCategory(ctx context.Context, req model.Category) (string, error) {
-	if strings.TrimSpace(req.Name) == "" {
-		return "", errors.New("❌ Не хватает параметров для создания категории")
-	}
-	newCategory := &model.Category{
-		UserID: req.UserID,
-		Name:   req.Name,
-		Color:  req.Color,
-	}
-	id, err := p.repository.AddCategory(ctx, newCategory)
-	if err != nil {
-		if strings.Contains(err.Error(), "уже существует") {
-			return "", fmt.Errorf("❌ Категория %s уже существует", req.Name)
-		}
-		return "", fmt.Errorf("❌ Ошибка при создании категории, %w", err)
-	}
-	addCategoryMessage := fmt.Sprintf(`
-	✅ Категория создана!
-	📂 Название: %s
-	🎨 Цвет: %s
-	🆔 ID: %d
-	Используйте этот ID для удаления категории.
-	`, req.Name, req.Color, id)
-
-	return addCategoryMessage, nil
-}
-func (p *ServiceT) GetAllCategories(ctx context.Context, userID int64) (string, error) {
-	categoriesDB, err := p.repository.GetAllCategories(ctx, userID)
-	if err != nil {
-		return "", fmt.Errorf("❌ Ошибка при получении категорий: %w", err)
-	}
-	if len(categoriesDB) == 0 {
-		return "У вас пока нет категорий. \nСоздать категорию можно командой /category add", nil
-	}
-	response := "📂 Ваши категории:\n\n"
-	for _, category := range categoriesDB {
-		response += fmt.Sprintf("%s\n\n", category.Name)
-		if category.Color != "" {
-			response += fmt.Sprintf("%s\n\n", category.Color)
-		}
-		response += fmt.Sprintf("ID: %d\n", category.ID)
-	}
-	response += "\n💡 Используйте ID для удаления категории"
-	return response, nil
-}
-func (p *ServiceT) DeleteCategory(ctx context.Context, userID int64, id int) (string, error) {
-	if id <= 0 {
-		return "", errors.New("❌ Ошибка: некорректно указан id категории")
-	}
-	categoryName, err := p.repository.DeleteCategory(ctx, userID, id)
-	if err != nil {
-		if strings.Contains(err.Error(), "no rows in result set") {
-			return "", fmt.Errorf("❌ Ошибка: некорректно указан ID категории")
-		}
-		return "", fmt.Errorf("❌ Ошибка при удалении категории: %w", err)
-	}
-	deleteCategoryMassage := fmt.Sprintf(`
-	✅ Категория %s удалена
-	Все расходы из этой категории перенесены в "Прочее"
-	`, categoryName)
-	return deleteCategoryMassage, nil
-}
-func (p *ServiceT) AddExpense(ctx context.Context, req *model.Expense) (string, error) {
+func (p *Service) AddExpense(ctx context.Context, req *model.Expense) (string, error) {
 	if req.Amount <= 0 {
 		return "", errors.New("❌ Сумма расхода должна быть положительной")
 	}
@@ -124,7 +36,7 @@ func (p *ServiceT) AddExpense(ctx context.Context, req *model.Expense) (string, 
 		Description: req.Description,
 		Created_at:  req.Created_at,
 	}
-	expense, err := p.repository.AddExpense(ctx, newExpense)
+	expense, err := p.repo.AddExpense(ctx, newExpense)
 	if err != nil {
 		if strings.Contains(err.Error(), "не найдена в базе данных") {
 			return "", fmt.Errorf("❌ Категория \"%s\" не найдена", req.Category)
@@ -144,8 +56,8 @@ func (p *ServiceT) AddExpense(ctx context.Context, req *model.Expense) (string, 
 
 	return addExpenseMessage, nil
 }
-func (p *ServiceT) TodayExpense(ctx context.Context, userID int64) (string, error) {
-	expenses, err := p.repository.TodayExpense(ctx, userID)
+func (p *Service) TodayExpense(ctx context.Context, userID int64) (string, error) {
+	expenses, err := p.repo.TodayExpense(ctx, userID)
 	if err != nil {
 		return "", fmt.Errorf("❌ Ошибка при при получении расходов за сегодня %w", err)
 	}
@@ -182,8 +94,8 @@ func (p *ServiceT) TodayExpense(ctx context.Context, userID int64) (string, erro
 
 	return response, nil
 }
-func (p *ServiceT) WeekExpense(ctx context.Context, userID int64) (string, error) {
-	expenses, err := p.repository.WeekExpense(ctx, userID)
+func (p *Service) WeekExpense(ctx context.Context, userID int64) (string, error) {
+	expenses, err := p.repo.WeekExpense(ctx, userID)
 	if err != nil {
 		return "", fmt.Errorf("❌ Ошибка при при получении расходов за неделю %w", err)
 	}
@@ -254,8 +166,8 @@ func (p *ServiceT) WeekExpense(ctx context.Context, userID int64) (string, error
 
 	return response, nil
 }
-func (p *ServiceT) MonthExpense(ctx context.Context, userID int64) (string, error) {
-	expenses, err := p.repository.MonthExpense(ctx, userID)
+func (p *Service) MonthExpense(ctx context.Context, userID int64) (string, error) {
+	expenses, err := p.repo.MonthExpense(ctx, userID)
 	if err != nil {
 		return "", fmt.Errorf("❌ Ошибка при при получении расходов за месяц %w", err)
 	}
@@ -301,8 +213,8 @@ func (p *ServiceT) MonthExpense(ctx context.Context, userID int64) (string, erro
 
 	return response, nil
 }
-func (p *ServiceT) StatsExpense(ctx context.Context, userID int64) (string, error) {
-	expenses, err := p.repository.StatsExpense(ctx, userID)
+func (p *Service) StatsExpense(ctx context.Context, userID int64) (string, error) {
+	expenses, err := p.repo.StatsExpense(ctx, userID)
 	if err != nil {
 		return "", fmt.Errorf("❌ Ошибка при получении расходов за весь период %w", err)
 	}
@@ -406,10 +318,11 @@ func (p *ServiceT) StatsExpense(ctx context.Context, userID int64) (string, erro
 			maxDay = day
 		}
 	}
-	maxDate, _ := time.Parse("2006-01-02", maxDay)
-	maxDayFormatted := maxDate.Format("02.01.2006")
-
-	response += fmt.Sprintf("📅 Самый дорогой день: %s (%.0f₽)", maxDayFormatted, maxSum)
+	if maxDay != "" {
+		maxDate, _ := time.Parse("2006-01-02", maxDay)
+		maxDayFormatted := maxDate.Format("02.01.2006")
+		response += fmt.Sprintf("📅 Самый дорогой день: %s (%.0f₽)", maxDayFormatted, maxSum)
+	}
 
 	return response, nil
 }
