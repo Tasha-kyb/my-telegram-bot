@@ -1,5 +1,7 @@
 TGBOT - это сервис для учета личных расходов с категориями и статистикой. Использует PostgreSQL.
 
+Ссылка на задачу: https://github.com/aimustaev/agent/blob/backend_3/expense/README.md
+
 Инструкция по запуску:
 
 # 1. Запустить БД в Docker
@@ -11,8 +13,11 @@ go run cmd/main.go
 # 3. Запустить приложение
 docker-compose up -d postgres && go run cmd/main.go
 
+# 4. Запустить тестирование Постман
+newman run TG_BOT_Service.postman_collection.json
 
-Ссылка на задачу: https://github.com/aimustaev/agent/blob/backend_3/expense/README.md
+Примечание: запрос CategoryDelete намеренно исключён из теста, так как при повторных запусках 
+удалённая ранее категория вызывает ошибку.
 
 Не реализовано:
 1. Управление бюджетами.
